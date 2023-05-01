@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titel</title>
+    <style>
+        canvas {
+            border: 2px solid black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Einige OO- Bälle auf einem Canvas...</h1>
+    <canvas id = "myCanvas" width="400px" height="400px"></canvas>
+    <script>
+        class Ball {
+            constructor(canvas, context, diameter, color, speed) {
+                this.canvas = canvas;
+                this.context = context;
+                this.diameter = diameter;
+                this.color = color; 
+                this.speed = speed;
+
+                this.x = Math.random() * (this.canvas.width - this.diameter);
+                this.y = Math.random() * (this.canvas.height - this.diameter);
+                let dir = 2*Math.PI*Math.random();
+                this.vx = this.speed * Math.cos(dir);
+                this.vy = this.speed * Math.sin(dir);
+            } 
+
+            draw() {
+                this.context.beginPath();
+                this.context.arc(this.x + this.diameter / 2, this.y + this.diameter / 2, this.diameter / 2, 0, 2 * Math.PI);
+                this.context.fillStyle = this.color;
+                this.context.fill();
+            }
+
+            move() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x + this.diameter > this.canvas.width) {
+                    this.vx = -this.vx;
+                }
+                if (this.y < 0 || this.y + this.diameter > this.canvas.height) {
+                    this.vy = -this.vy;
+                }
+            }
+        }
+
+        function clearCanvas(bg="white"){
+            context.fillStyle = bg;
+            context.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function gameLoop() {
+            for (let ball of balls) {
+                 ball.move();
+            }
+            clearCanvas(); 
+            for (let ball of balls) {
+                 ball.draw();
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[getRandomInt(0, 15)];
+            }
+            return color;
+        }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        let balls =  [];
+        const canvas = document.getElementById('myCanvas');
+        const context = canvas.getContext('2d');
+        let numbers = prompt("Wieviele Bälle ?", "10");
+        let number = Math.max(1, parseInt(numbers));
+        for(let i=1; i<=number; i++)
+        {
+            balls.push(new Ball(canvas, context, getRandomInt(4,42), getRandomColor(), getRandomInt(3,8))); 
+        } 
+        gameLoop(); // Start 
+
+    </script>
+</body>
+</html>
